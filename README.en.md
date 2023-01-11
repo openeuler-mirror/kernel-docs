@@ -1,36 +1,31 @@
 # kernel-docs
 
-#### Description
+## Description
 It's used to store kernel documents.
 
-#### Software Architecture
-Software architecture description
+## What's here?
+1. Introduction to openEuler Kernel
+2. Description of features of each version of openEuler Kernel
+3. OpenEuler Kernel technology videos and materials
+4. OpenEuler Kernel SIG biweekly meeting materials
 
-#### Installation
+## How to add/delete and modify documents in this warehouse
+1. Fork warehouse
+2. Create a new kernel_ docs_ Xxxx branch
+3. Submit code
+4. Create a new Pull Request
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+## Note
+1. PPT, Word and other documents that are easy to tamper with, please convert them into PDF and upload them to our warehouse
+2. Please pay attention to the legal and compliance issues of the uploaded documents
 
-#### Instructions
+## Member
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+### List of committers
+LiaoTao_Wave[@LiaoTao_Wave](https://gitee.com/LiaoTao_Wave)
 
-#### Contribution
+## Address of biweekly meeting minutes of openEuler Kernel SIG
+https://etherpad.openeuler.org/p/Kernel-meetings
 
-1.  Fork the repository
-2.  Create Feat_xxx branch
-3.  Commit your code
-4.  Create Pull Request
-
-
-#### Gitee Feature
-
-1.  You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2.  Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3.  Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4.  The most valuable open source project [GVP](https://gitee.com/gvp)
-5.  The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6.  The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+## How to contact us
+Please contact LiaoTao_Wave[@LiaoTao_Wave](https://gitee.com/LiaoTao_Wave) directly

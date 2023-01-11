@@ -28,4 +28,4 @@ LiaoTao_Wave[@LiaoTao_Wave](https://gitee.com/LiaoTao_Wave)
 https://etherpad.openeuler.org/p/Kernel-meetings
 
 ## 如何联系我们
-邮件列表：kernel-docs@openeuler.org
+请直接联系LiaoTao_Wave[@LiaoTao_Wave](https://gitee.com/LiaoTao_Wave)

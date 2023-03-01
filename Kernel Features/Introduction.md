@@ -1,0 +1,1 @@
+该文件夹主要用于存放openEuler kernel相关特性的技术文档

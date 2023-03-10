@@ -1,7 +1,7 @@
 # kernel-docs
 
 ## 介绍
-Kernel-docs用于存放openEuler Kernel相关的文档资料，包括但不限于指导文档，规章制度，Kernel SIG例会材料，技术分享视频及文章等内容.
+Kernel-docs用于存放openEuler Kernel相关的文档资料，包括但不限于指导文档，特性介绍文档，Kernel SIG例会材料，技术分享视频及文章等内容.
 
 ## 这里有什么？
 1. openEuler Kernel 介绍
@@ -29,3 +29,7 @@ https://etherpad.openeuler.org/p/Kernel-meetings
 
 ## 如何联系我们
 请直接联系LiaoTao_Wave[@LiaoTao_Wave](https://gitee.com/LiaoTao_Wave)
+
+## 附录
+了解更多openEuler Kernel相关信息，请点击以下地址：
+https://gitee.com/openeuler/community/tree/master/sig/Kernel

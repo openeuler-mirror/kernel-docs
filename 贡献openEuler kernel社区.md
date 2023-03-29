@@ -74,20 +74,27 @@ kernel 项目有多个分支，您可以[点击此处](https://gitee.com/openeul
 
 ## 提交贡献
 
-当您在本地完成代码开发后，有以下两种方式可将其提交到 openEuler kernel 社区：
-
-* **邮件发送：**将您的修改制作成补丁并发送至邮件列表 **kernel@openeuler.org**
-* **提交 PR：**将您本地的提交上传 gitee仓库以 PR 形式提交到 openEuler kernel
-
 ### 提交 issue
 
-无论您选择哪种提交方式，在您提交之前，都需要先将您发现的问题或者期待改进的内容以 issue 的形式提交到 openEuler kernel 社区，便于社区Maintainer了解您所提补丁的具体目的。issue 类型请根据实际情况填写，可以是缺陷/Bug, 也可以是需求/特性。一个 BUG 或需求可以对应多个补丁和PR。
+在您提交贡献之前，需要先将您发现的问题或者期待改进的内容以 issue 的形式提交到 openEuler kernel 社区，便于社区Maintainer了解您所提补丁的具体目的。issue 类型请根据实际情况填写，可以是缺陷/Bug, 也可以是需求/特性。一个 BUG 或需求可以对应多个补丁和PR。
 
 您可以[点击此处](https://gitee.com/openeuler/kernel/issues)查看历史 issue 详情。
 
-### 邮件发送
+### 提交 PR
 
-#### 准备补丁
+当您在本地完成代码开发后，需要以提交 PR 的形式将其贡献至 openEuler kernel 社区。
+在 gitee 中，一个 PR 由以下几个部分组成：标题、内容以及其评论、提交的代码和文件，关于 PR 提交的指引和规则已经在 openEuler 社区有完善的文档描述，您可以点击以下链接查阅：
+
+* [提交 PR 指引]([https://gitee.com/openeuler/community/blob/master/zh/contributors/Gitee-workflow.md]())
+* [如何提交一个好的 PR]([https://www.openeuler.org/zh/blog/myeuler/2022-12-26-HowTosubmitPR.html]())
+
+**注意**：对于不方便直接提交 PR 的社区开发者，我们提供了补丁转 PR 的方式：您可以将修改部分的代码制作成补丁发送至 **kernel@openeuler.org** 邮件列表，成功发送后社区会自动将其转为 PR。**此外，您还可以在发送的补丁邮件中，与邮件列表里的其他社区开发者共同交流/探讨该补丁相关的技术细节和策略**。
+
+以下内容将进一步指引您如何通过邮件发送的形式提交 PR。
+
+#### 邮件发送
+
+##### 准备补丁
 
 在您提交补丁之前，请确保您的补丁可以正确地被编译且已经完成测试。
 
@@ -103,7 +110,7 @@ git format-patch --subject-prefix="PATCH v2 OLK-5.10" -1
 ```
 即生成一个 v2版本的补丁，其提交的目标分支为 OLK-5.10。
 
-#### 发送补丁
+##### 发送补丁
 
 使用以下命令将补丁发送到邮件列表：**kernel@openeuler.org**
 ```
@@ -121,11 +128,3 @@ git send-email *.patch -to="kernel@openeuler.org" --suppress-cc=all
 **注意**：如果您使用 git send-email，您必须添加 --suppress-cc=all，否则电子邮件将被抄送到上游社区和邮件列表中的人。
 
 您可以[点击此处]([https://git-scm.com/docs/git-send-email]())查看使用 git-send-email 发送补丁程序指引。
-
-### 提交 PR
-
-在 gitee 中，一个 PR 由以下几个部分组成：标题、内容以及其评论、提交的代码和文件，关于 PR 提交的指引和规则已经在 openEuler 社区有完善的文档描述，您可以点击以下链接查阅：
-
-* [提交 PR 指引]([https://gitee.com/openeuler/community/blob/master/zh/contributors/Gitee-workflow.md]())
-* [如何提交一个好的 PR]([https://www.openeuler.org/zh/blog/myeuler/2022-12-26-HowTosubmitPR.html]())
-

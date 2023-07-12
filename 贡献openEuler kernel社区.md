@@ -118,7 +118,7 @@ git format-patch --subject-prefix="PATCH v2 OLK-5.10" -1
 使用以下命令将补丁发送到邮件列表：**kernel@openeuler.org**
 
 ```
-git send-email *.patch -to="kernel@openeuler.org" --suppress-cc=all
+git send-email -to="kernel@openeuler.org" --suppress-cc=all <patches>
 ```
 
 在大多数情况下，您的补丁需要发送到开发主线，然后回合到维护分支。

@@ -28,7 +28,7 @@
 图2. struct page中的关系信息
 </p>
 
-由于每个页可以容纳64个struct，因此3个struct page只需要1个页就足够了，后7个页是冗余的。因此可以将图1中HugeTLB对应的后7个页的vmemmap虚拟地址全部映射到第1个vmemmap对应的物理页帧，然后释放后7个页，如图3所示。
+由于每个页可以容纳64个struct page，因此只要保留存放前3个struct page的第1个页就足够了，后7个页是冗余的。可以将图1中HugeTLB对应的后7个页的vmemmap虚拟地址全部映射到第1个vmemmap对应的物理页帧，然后释放后7个页，如图3所示。
 
 ![](./images/优化页管理.png)
 

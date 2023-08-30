@@ -115,6 +115,11 @@ git format-patch --subject-prefix="PATCH v2 OLK-5.10" -1
 
 ##### 发送补丁
 
+在您发送补丁到邮件列表前需要先订阅，请参考[订阅邮件列表指引](https://www.openeuler.org/zh/community/mailing-list/)：
+
+1. [kernel@openeuler.org邮件列表](https://mailweb.openeuler.org/postorius/lists/kernel@openeuler.org/)
+2. [kernel-build@openeuler.org邮件列表](https://www.openeuler.org/zh/community/mailing-list/)
+
 使用以下命令将补丁发送到邮件列表：**kernel@openeuler.org**
 
 ```

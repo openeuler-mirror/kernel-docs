@@ -1,9 +1,10 @@
 # kernel-docs
 
 ## Description
-It's used to store kernel documents.
+Kernel-docs is used to store documentation related to openEuler Kernel, including but not limited to guidance documents, feature introduction documents, Kernel SIG meeting materials, technical sharing videos and articles, etc.
 
 ## What's here?
+
 1. Introduction to openEuler Kernel
 2. Description of features of each version of openEuler Kernel
 3. OpenEuler Kernel technology videos and materials

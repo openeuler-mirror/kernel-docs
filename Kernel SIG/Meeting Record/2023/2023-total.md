@@ -1,0 +1,1284 @@
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+【2023/8/25 Kernel SIG 双周例会】
+轮值主持：桑力鹏
+下次轮值主持：张伽琳
+会议链接：https://us06web.zoom.us/j/88618764013?pwd=aGc4UU9WL2FpNUxnUFphM24xZDBOZz09
+会议纪要：https://etherpad.openeuler.org/p/Kernel-meetings
+一、上期遗留问题跟踪
+
+二、议题列表
+
+议题一：进展update --- 张伽琳 & 郑增凯
+近两周(2023.8.14 ~ 8.25)内进展同步:
+        总体上OLK-5.10主干更新到tag 5.10.0-159.0.0
+        openEuler-22.03-LTS-SP2分支，更新到5.10.0-153.24.0，
+        release ISO获取链接: https://repo.openeuler.org/openEuler-22.03-LTS-SP2/ISO/
+                对应update rpm包下载地址:
+                https://repo.openeuler.org/openEuler-22.03-LTS-SP2/update/
+        openEuler-22.03-LTS-SP1分支，更新到tag 5.10.0-136.46.0，
+        release ISO获取链接: https://repo.openeuler.org/openEuler-22.03-LTS-SP1/ISO/
+                对应update rpm包下载地址:
+                https://repo.openeuler.org/openEuler-22.03-LTS-SP1/update/
+        openEuler-22.03-LTS维护分支更新到tag 5.10.0-60.108.0，
+        release ISO获取链接: https://repo.openeuler.org/openEuler-22.03-LTS/ISO/
+                对应update rpm包下载地址:
+                https://repo.openeuler.org/openEuler-22.03-LTS/update/
+
+        以OLK-5.10为例:
+        从 5.10.0-158.0.0 更新至 5.10.0-159.0.0, 回合补丁数1352个
+        git log 5.10.0-158.0.0..5.10.0-159.0.0 --oneline | wc -l
+        1352
+
+        其中
+        同步linux 5.10.y社区LTS补丁集10个: 5.10.163 - 5.10.172
+
+        回合CVE补丁11个:
+        CVE-2023-1206
+        CVE-2023-40283
+        CVE-2023-4194
+        CVE-2023-20593
+        cve-2023-38432
+        CVE-2023-4273
+        CVE-2023-4128
+        CVE-2023-4134
+        CVE-2023-4133
+        CVE-2023-3867
+        CVE-2023-4147
+
+        OLK-5.10合入PR:
+
+        arm64架构使能tlb批量刷新
+        https://gitee.com/openeuler/kernel/pulls/1852  arm64: support batched/deferred tlb shootdown during page reclamation/migration
+
+        zram支持二次压缩
+        https://gitee.com/openeuler/kernel/pulls/1802  zram: Support multiple compression streams
+
+        arm64架构使能THP SWAP优化
+        https://gitee.com/openeuler/kernel/pulls/1796  arm64: enable THP_SWAP for arm64
+
+        支持bonding下xdp功能，增强bonding模式下网络处理能力:
+        https://gitee.com/openeuler/kernel/pulls/1520  enable bonding XDP
+
+        新增timer_shutdown[_sync]()接口:
+        https://gitee.com/openeuler/kernel/pulls/1727  add support for timer_shutdown() api
+
+        jd:容器级超线程驱逐:
+        https://gitee.com/openeuler/kernel/pulls/1623 introduce cgroup level smt expell
+
+        3snic 3s9xx network driver:
+        https://gitee.com/openeuler/kernel/pulls/1724 Net: ethernet: Support management channel of the host tool in 3snic 3s9xx network driver
+        https://gitee.com/openeuler/kernel/pulls/1597 Fix the bugs of 3SNIC driver compilation failure while using clang
+
+        hisilicon:
+        https://gitee.com/openeuler/kernel/pulls/1721 [sync] PR-1651: Fix missing dealloc_dfx_cnt() during device unregister
+        https://gitee.com/openeuler/kernel/pulls/1671 Backport bugfixes for RDMA/hns from mainline linux
+        https://gitee.com/openeuler/kernel/pulls/1719 net: hns3: revert "net: hns3: disbable pfc en before the reset" and backport the mainline
+        https://gitee.com/openeuler/kernel/pulls/1201 [sync] PR-1144: crypto: hisilicon/qm: modify loop exit condition
+
+        loongarch:
+        https://gitee.com/openeuler/kernel/pulls/1646 Fixed extioi hardware emulation bugs on loongarch
+
+        社区问题修复以及上游社区bugfix补丁回合：
+        https://gitee.com/openeuler/kernel/pulls/1821  nbd: pass nbd_sock to nbd_read_reply() instead of index
+        https://gitee.com/openeuler/kernel/pulls/1843  net: bridge: multicast: notify switchdev driver whenever MC processing gets disabled
+        https://gitee.com/openeuler/kernel/pulls/1833  xsk: Initialise xskb free_list_node
+        https://gitee.com/openeuler/kernel/pulls/1650  mm: disable kernelcore=mirror when no mirror memory
+        https://gitee.com/openeuler/kernel/pulls/1768  bonding: Fix incorrect deletion of ETH_P_8021AD protocol vid from slaves
+        https://gitee.com/openeuler/kernel/pulls/1766  xen/netback: Fix buffer overrun triggered by unusual packet
+        https://gitee.com/openeuler/kernel/pulls/1649 Enable TPM TIS customization
+        https://gitee.com/openeuler/kernel/pulls/1734  arm64/mpam: mark partid non-exclusive if self-owned
+        https://gitee.com/openeuler/kernel/pulls/1680  nvme-pci: fix doorbell buffer value endianness
+        https://gitee.com/openeuler/kernel/pulls/1693  nvme-pci: fix mempool alloc size
+        https://gitee.com/openeuler/kernel/pulls/1666  nvme-pci: fix timeout request state check
+        https://gitee.com/openeuler/kernel/pulls/1709  Backport cgroup: fix missing cpus_read_{lock,unlock}() in cgroup_transfer_tasks()
+
+议题二：两个Pull Request讨论 --- 曾昭荣
+
+    1，https://gitee.com/openeuler/kernel/pulls/1293
+
+    2，https://gitee.com/openeuler/kernel/pulls/1871
+
+
+议题三：赵小强申请成为committer 
+结论：先成为分支维护的committer，如果想成为某个模块的committer，可以在相应模块做贡献，然后成为相应模块的committer，先提PR更新sig-info.yaml文件和committers.md成为维护分支committer，更新committers.md的configs模块
+
+议题四：龙芯毛碧波申请成为committer
+结论：先参与一段时间的社区贡献，再加入commiter，先提PR更新sig-info.yaml和committers.md成为contributors
+
+committer相关信息:
+https://gitee.com/openeuler/community/blob/master/sig/Kernel/sig-info.yaml
+https://gitee.com/openeuler/community/blob/master/sig/Kernel/committers.md
+
+三、本期遗留问题
+
+温馨提醒：请在接入会议后修改参会人的姓名，也可以使用您在gitee.com的ID
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+【2023/8/11 Kernel SIG 双周例会】
+会议时间：2023年8月11日 14:00-15:45
+轮值主持：廖涛
+下次轮值主持：桑力鹏
+
+会议链接：https://us06web.zoom.us/j/85789825222?pwd=bVcrNXVhVW9ObzVQWjVKdTlBNm14Zz09
+会议纪要：https://etherpad.openeuler.org/p/Kernel-meetings
+
+一、上期遗留问题跟踪
+讨论新增陈为珑为kernel sig committer 
+
+二、议题列表
+
+议题一：进展update --- 张伽琳 & 郑增凯
+近两周(2023.7.31 ~ 8.11)内进展同步:
+        总体上OLK-5.10主干更新到tag 5.10.0-158.0.0
+        openEuler-22.03-LTS-SP2分支，更新到5.10.0-153.22.0，
+        release ISO获取链接: https://repo.openeuler.org/openEuler-22.03-LTS-SP2/ISO/
+                对应update rpm包下载地址:
+                https://repo.openeuler.org/openEuler-22.03-LTS-SP2/update/
+        openEuler-22.03-LTS-SP1分支，更新到tag 5.10.0-136.44.0，
+        release ISO获取链接: https://repo.openeuler.org/openEuler-22.03-LTS-SP1/ISO/
+                对应update rpm包下载地址:
+                https://repo.openeuler.org/openEuler-22.03-LTS-SP1/update/
+        openEuler-22.03-LTS维护分支更新到tag 5.10.0-60.106.0，
+        release ISO获取链接: https://repo.openeuler.org/openEuler-22.03-LTS/ISO/
+                对应update rpm包下载地址:
+                https://repo.openeuler.org/openEuler-22.03-LTS/update/
+
+        以OLK-5.10为例:
+        从 5.10.0-157.0.0 更新至 5.10.0-158.0.0, 回合补丁数157个
+        git log 5.10.0-157.0.0..5.10.0-158.0.0 --oneline | wc -l
+        157
+
+        其中
+        同步linux 5.10.y社区LTS补丁集3个: 5.10.160 - 5.10.162
+
+        回合CVE补丁15个:
+        CVE-2023-3772
+        CVE-2023-4004
+        CVE-2023-4132
+        CVE-2023-32250
+        CVE-2023-32252
+        CVE-2023-32257
+        CVE-2023-38430
+        CVE-2023-3863
+        CVE-2023-38427
+        CVE-2023-3609
+        CVE-2023-38426
+        CVE-2023-3776
+        CVE-2023-38429
+        CVE-2023-21255
+        CVE-2023-38428
+
+        dynamic affinity for scheduler设置负载统计的方式：
+        https://gitee.com/openeuler/kernel/pulls/1630 sched: Add feature 'UTIL_TASKGROUP' for dynamic affinity
+        
+        sock_ops和sk_msg类型BPF程序支持调用bpf_get_netns_cookie辅助函数：
+        https://gitee.com/openeuler/kernel/pulls/1522 Allow bpf_get_netns_cookie in BPF_PROG_TYPE_SK_MSG and BPF_PROG_TYPE_SOCK_OPS
+
+        sharepool代码白盒检视类问题整改：
+        https://gitee.com/openeuler/kernel/pulls/1550 Sync patches for sharepool
+
+        LoongArch:
+        https://gitee.com/openeuler/kernel/pulls/1618 LoongArch: fix some config not defined
+
+        hisilicon:
+        https://gitee.com/openeuler/kernel/pulls/1683 net: hns3: revert some bugfix and backport some patch
+        https://gitee.com/openeuler/kernel/pulls/1690 uacce: delete the pointer address printing
+        https://gitee.com/openeuler/kernel/pulls/1268 [sync] PR-1070: crypto: hisilicon - fix some reset problem
+        https://gitee.com/openeuler/kernel/pulls/1659 vfio-pci: Match specific devices with vendor id and device id
+        https://gitee.com/openeuler/kernel/pulls/1555 net: hns3: fix setting wrong tx_timeout value issue and synchronizes the differences between the kernel and openeuler
+
+        JD:
+        https://gitee.com/openeuler/kernel/pulls/1660 remove cpu.qos_leve from root cpu cgroup
+        
+        社区问题修复以及上游社区bugfix补丁回合：
+        https://gitee.com/openeuler/kernel/pulls/1707 Mainline bugfix patches backport 5.10
+        https://gitee.com/openeuler/kernel/pulls/1672 tty: fix pid memleak in disassociate_ctty()
+        https://gitee.com/openeuler/kernel/pulls/1580 tracing: Fix warning in trace_buffered_event_disable()
+        https://gitee.com/openeuler/kernel/pulls/1611 sched: Fix build error for dynamic_affinity_enable()
+        https://gitee.com/openeuler/kernel/pulls/1581 psi: fix compile error for psi cgroupv1 when CONFIG_CGROUP=n
+
+        KABI问题:
+        https://gitee.com/openeuler/kernel/pulls/1636 blk-mq: Improve performance of non-mq IO schedulers with multiple HW queues
+
+
+议题二：讨论新增邢明政为arch/riscv目录committer
+https://gitee.com/openeuler/community/pulls/4954
+参与维护openEuler RISC-V kernel，申请担任邢明政为arch/riscv目录committer
+结论：通过
+
+议题三：申请成为committer
+    1. 李雪峰 龙芯 giteeid: lixuefeng-loongson
+    review补丁:
+    https://gitee.com/openeuler/kernel/pulls/1148
+    https://gitee.com/openeuler/kernel/pulls/1202
+    https://gitee.com/openeuler/kernel/pulls/1618
+    提交贡献：
+    https://gitee.com/openeuler/kernel/pulls/1157
+    https://gitee.com/openeuler/kernel/pulls/1175
+    https://gitee.com/openeuler/kernel/pulls/1179
+    2.毛碧波 龙芯 giteeid: maobibo
+结论：通过
+
+议题四：新增陈为珑为kernel sig committer 
+所在部门：华为OS内核实验室
+多年Linux开发经验，专长异构内存、内核设备管理、网络、调度系统子系统等领域
+目前担任子仓committer ，申请主仓committer 
+结论：通过
+
+openEuler社区邮件列表：
+https://mailweb.openeuler.org/hyperkitty/list/kernel@openeuler.org/
+订阅链接：https://mailweb.openeuler.org/postorius/lists/kernel.openeuler.org/
+发送时需要git format-patch --subject-prefix="PATCH branch-name"， 多个补丁的补丁集的话需要加--cover-letter
+如：git format-patch --cover-letter --subject-prefix="PATCH OLK-5.10"发到指定的分支才能同步提PR到指定分支。
+
+三、本期遗留问题
+
+温馨提醒：请在接入会议后修改参会人的姓名，也可以使用您在gitee.com的ID
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+【2023/7/28 Kernel SIG 双周例会】
+会议时间：2023年7月28日 14:00-15:45
+轮值主持：张伽琳
+下次轮值主持：桑力鹏
+
+会议链接：https://us06web.zoom.us/j/85789825222?pwd=bVcrNXVhVW9ObzVQWjVKdTlBNm14Zz09
+会议纪要：https://etherpad.openeuler.org/p/Kernel-meetings
+
+一、上期遗留问题跟踪
+
+二、议题列表
+
+议题一：进展update --- 张伽琳 & 郑增凯
+近两周(2023.7.17 ~ 7.28)内进展同步:
+        总体上OLK-5.10主干更新到tag 5.10.0-157.0.0
+        openEuler-22.03-LTS-SP2分支，更新到5.10.0-153.20.0，
+        release ISO获取链接: https://repo.openeuler.org/openEuler-22.03-LTS-SP2/ISO/
+                对应update rpm包下载地址:
+                https://repo.openeuler.org/openEuler-22.03-LTS-SP2/update/
+        openEuler-22.03-LTS-SP1分支，更新到tag 5.10.0-136.42.0，
+        release ISO获取链接: https://repo.openeuler.org/openEuler-22.03-LTS-SP1/ISO/
+                对应update rpm包下载地址:
+                https://repo.openeuler.org/openEuler-22.03-LTS-SP1/update/
+        openEuler-22.03-LTS维护分支更新到tag 5.10.0-60.104.0，
+        release ISO获取链接: https://repo.openeuler.org/openEuler-22.03-LTS/ISO/
+                对应update rpm包下载地址:
+                https://repo.openeuler.org/openEuler-22.03-LTS/update/
+
+        以OLK-5.10为例:
+        从 5.10.0-156.0.0 更新至 5.10.0-157.0.0, 回合补丁数723个
+        git log 5.10.0-156.0.0..5.10.0-157.0.0 --oneline | wc -l
+        723
+
+        其中
+        同步linux 5.10.y社区LTS补丁集6个: 5.10.154 - 5.10.159
+
+        回合CVE补丁7个:
+        CVE-2023-3611
+        CVE-2023-3567
+        CVE-2023-35001
+        CVE-2022-45886
+        CVE-2023-3117
+        CVE-2023-3338
+        CVE-2023-31248
+
+        ARMv8.x 新增特性 lrcpc 回合:
+        https://gitee.com/openeuler/kernel/pulls/1437 arm64: enable lrcpc feature of ARMv8.x from mainline
+
+        bonding模块支持双发网卡的ARP:
+        https://gitee.com/openeuler/kernel/pulls/1434 anolis: bond: broadcast ARP or ND messages to all slaves
+
+        社区问题修复以及上游社区bugfix补丁回合：
+        https://gitee.com/openeuler/kernel/pulls/1527 arm64/mpam: fix missing kfree domain's ctrl_val arrray
+        https://gitee.com/openeuler/kernel/pulls/1548 mm: memcontrol: fix cannot alloc the maximum memcg ID
+        https://gitee.com/openeuler/kernel/pulls/1441 workqueue: fix sanity check warning when invoke destroy_workqueue()
+        https://gitee.com/openeuler/kernel/pulls/1476 ipv6/addrconf: fix a potential refcount underflow for idev
+        https://gitee.com/openeuler/kernel/pulls/1428 scsi: iscsi_tcp: Check that sock is valid before iscsi_set_param()
+        https://gitee.com/openeuler/kernel/pulls/1425 loop: loop_set_status_from_info() check before assignment
+        https://gitee.com/openeuler/kernel/pulls/1427 nbd: Fix debugfs_create_dir error checking
+        https://gitee.com/openeuler/kernel/pulls/1415 Fix generic/299 fail
+        Intel:
+        https://gitee.com/openeuler/kernel/pulls/1315 Intel: Backport mainline UPI uncore discovery warning fixes for SPR MCC to OLK-5.10
+        Zhaoxin
+        https://gitee.com/openeuler/kernel/pulls/1475 pmu: remove uncore code for Zhaoxin Platform
+        hisilicon:
+        https://gitee.com/openeuler/kernel/pulls/1488 RDMA/hns: Remove unnecessary QP type checks
+        https://gitee.com/openeuler/kernel/pulls/1184 Fix CQ and QP cache affinity
+
+议题二：容器级 core_pattern 隔离  -- 赵小强 京东
+原实现有KABI变更，会后讨论修复方案
+
+议题三：外部驱动引入内核流程说明 --- 刘彦泽
+
+议题四：申请使能 riscv64 架构 -- 邢明政 (ISCAS)
+
+议题五：新增陈为珑为kernel sig committer  
+遗留，下次例会讨论
+
+
+三、本期遗留问题
+
+温馨提醒：请在接入会议后修改参会人的姓名，也可以使用您在gitee.com的ID
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+【2023/7/14 Kernel SIG 双周例会】
+会议时间：2023年7月14日 14:00-15:30
+轮值主持：廖涛
+下次轮值主持：张伽琳
+
+会议链接：https://us06web.zoom.us/j/84401590636?pwd=MitsdU9RcFYyYnJHWDRSdmRWQzd3UT09
+
+会议纪要：https://etherpad.openeuler.org/p/Kernel-meetings
+
+一、上期遗留问题跟踪
+
+二、议题列表
+
+议题一：进展update --- 张伽琳 & 郑增凯
+近两周(2023.7.3 ~ 7.15)内进展同步:
+        总体上OLK-5.10主干更新到tag 5.10.0-156.0.0
+        openEuler-22.03-LTS-SP2分支，更新到5.10.0-153.18.0，
+        release ISO获取链接: https://repo.openeuler.org/openEuler-22.03-LTS-SP2/ISO/
+                对应update rpm包下载地址:
+                https://repo.openeuler.org/openEuler-22.03-LTS-SP2/update/
+        openEuler-22.03-LTS-SP1分支，更新到tag 5.10.0-136.40.0，
+        release ISO获取链接: https://repo.openeuler.org/openEuler-22.03-LTS-SP1/ISO/
+                对应update rpm包下载地址:
+                https://repo.openeuler.org/openEuler-22.03-LTS-SP1/update/
+        openEuler-22.03-LTS维护分支更新到tag 5.10.0-60.102.0，
+        release ISO获取链接: https://repo.openeuler.org/openEuler-22.03-LTS/ISO/
+                对应update rpm包下载地址:
+                https://repo.openeuler.org/openEuler-22.03-LTS/update/
+
+        以openEuler-22.03-LTS-SP2为例:
+        从 5.10.0-153.16.0 更新至 5.10.0-153.18.0, 回合补丁数43个
+        git log 5.10.0-153.16.0..5.10.0-153.18.0 --oneline | wc -l
+        43
+        其中
+        openEuler-22.03-LTS-SP2分支回合CVE补丁9个:
+        CVE-2023-3268
+        CVE-2023-35828
+        CVE-2023-31084
+        CVE-2023-35824
+        CVE-2023-35823
+        CVE-2023-3327
+        CVE-2023-3358
+        CVE-2023-3090
+        CVE-2023-3389
+        测试发现的问题修复以及上游社区补丁回合：
+        https://gitee.com/openeuler/kernel/pulls/1211 [sync] PR-1185:  nbd: validate the block size in nbd_set_size
+        https://gitee.com/openeuler/kernel/pulls/1234 [sync] PR-1220:  mm/memory_hotplug: extend offline_and_remove_memory() to handle more than one memory block
+        https://gitee.com/openeuler/kernel/pulls/1249 [sync] PR-1245:  hugetlb: Fix some incorrect behavior
+        https://gitee.com/openeuler/kernel/pulls/1236 [sync] PR-1194:  fix memleak with efi_fake_mem
+        https://gitee.com/openeuler/kernel/pulls/1231 [sync] PR-1191:  fix memory reliable related issues
+        https://gitee.com/openeuler/kernel/pulls/1306 [sync] PR-1297:  iommu/iova: move IOVA_MAX_GLOBAL_MAGS outside of IOMMU_SUPPORT
+        https://gitee.com/openeuler/kernel/pulls/1344 [sync] PR-1272:  xfs: fix some problems recently
+
+议题二： TDPMMU enabling in OLK
+                  eg. about parallel MMU operations with TDP MMU -- Zhang Yu - Intel 
+                  Note: please also invite virt-sig maintainer
+                  待进一步讨论
+议题三：23.09版本策略交流 -- 李炜
+
+三、本期遗留问题
+
+温馨提醒：请在接入会议后修改参会人的姓名，也可以使用您在gitee.com的ID
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+【2023/6/30 Kernel SIG 双周例会】
+会议时间：2023年6月30日 14:00-15:30
+轮值主持：桑力鹏
+下次轮值主持：廖涛
+
+会议链接：https://us06web.zoom.us/j/81270448575?pwd=WElDeFQ1azluejNHcXR0a3Y4R1VHUT09
+ 
+会议纪要：https://etherpad.openeuler.org/p/Kernel-meetings
+
+一、上期遗留问题跟踪
+KABI新增接口：有兼容性SIG分析结论再同步到kernel sig
+
+二、议题列表
+
+议题一：进展update --- 张伽琳 & 郑增凯
+近两周(2023.6.19 ~ 6.30)内进展同步:
+        总体上OLK-5.10主干更新到tag 5.10.0-155.0.0
+        openEuler-22.03-LTS-SP2更新到5.10.0-153.16.0，RC6 5.10.0-153.12.0
+        openEuler-22.03-LTS维护分支更新到tag 5.10.0-60.100.0，
+                对应rpm包下载地址: https://repo.openeuler.org/openEuler-22.03-LTS/update/
+        openEuler-22.03-LTS-SP1分支，更新到tag 5.10.0-136.38.0，
+        release ISO获取链接: https://repo.openeuler.org/openEuler-22.03-LTS-SP1/ISO/
+                对应update rpm包下载地址:
+                https://repo.openeuler.org/openEuler-22.03-LTS-SP1/update/aarch64/Packages/
+        以openEuler-22.03-LTS-SP2为例:
+        从 5.10.0-153.9.0 更新至 5.10.0-153.16.0, 回合补丁数52个
+        git log 5.10.0-153.9.0..5.10.0-153.16.0 --oneline | wc -l
+        52
+
+openEuler-22.03-LTS-SP2版本内核总结: https://gitee.com/openeuler/kernel/issues/I7HCHQ
+
+上周遗留： KABI新增接口：兼容性SIG分析结论：https://gitee.com/openeuler/kernel/issues/I7GJJY
+议题二：openEuler 2203 sp2 版本 sysmonitor开源内核适配补丁评审 --- 谢堂鑫 & 齐森
+
+议题三：增强mirror memory中hugetlb适配虚拟化场景，并为x86平台使能reliable memory -- 曾昭荣
+
+23.09需求收集里程碑: https://e.gitee.com/open_euler/milestones/185397/issues/table
+三、本期遗留问题
+
+温馨提醒：请在接入会议后修改参会人的姓名，也可以使用您在gitee.com的ID
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+【2023/6/16 Kernel SIG 双周例会】
+会议时间：2023年6月16日 14:00-15:30
+轮值主持：张伽琳
+下次轮值主持：廖涛
+
+会议链接：https://us06web.zoom.us/j/88482572951?pwd=dXV5bFh4Nyt2Z1VpN0NOL3hGSWVHUT09
+ 
+会议纪要：https://etherpad.openeuler.org/p/Kernel-meetings
+
+一、上期遗留问题跟踪
+
+二、议题列表
+
+议题一：进展update --- 张伽琳 & 郑增凯
+近两周(2023.6.5 ~ 6.16)内进展同步:
+        总体上OLK-5.10主干更新到tag 5.10.0-154.0.0
+        openEuler-22.03-LTS-SP2更新到5.10.0-153.9.0，RC4转测 5.10.0-153.8.0
+        openEuler-22.03-LTS维护分支更新到tag 5.10.0-60.98.0，
+                对应rpm包下载地址: https://repo.openeuler.org/openEuler-22.03-LTS/update/
+        openEuler-22.03-LTS-SP1分支，更新到tag 5.10.0-136.36.0，
+        release ISO获取链接: https://repo.openeuler.org/openEuler-22.03-LTS-SP1/ISO/
+                对应update rpm包下载地址:
+                https://repo.openeuler.org/openEuler-22.03-LTS-SP1/update/aarch64/Packages/
+        以openEuler-22.03-LTS-SP2为例:
+        从 5.10.0-153.0.0 更新至 5.10.0-153.9.0, 回合补丁数303个
+        git log 5.10.0-153.0.0..5.10.0-153.9.0 --oneline | wc -l
+        303
+
+        其中
+        openEuler-22.03-LTS-SP2分支回合CVE补丁4个:
+        CVE-2022-48502
+        CVE-2023-33288
+        CVE-2023-2985
+        CVE-2023-22998
+
+        openEuler-22.03-LTS-SP2合入PR:
+        https://gitee.com/openeuler/kernel/pulls/1140  tools: add sample sockmap code for redis
+        https://gitee.com/openeuler/kernel/pulls/1126 [sync] PR-1115:  userswap bugfix
+        https://gitee.com/openeuler/kernel/pulls/1125  add one bpf helper function for redissockmap
+        https://gitee.com/openeuler/kernel/pulls/1105 [sync] PR-1089:  power: supply: bq24190: Fix use after free bug in bq24190_remove due to race condition
+        https://gitee.com/openeuler/kernel/pulls/1110 [sync] PR-1090:  fs/ntfs3: Check fields while reading
+        https://gitee.com/openeuler/kernel/pulls/1119 [openEuler-22.03-LTS-SP2] net: hns3: refactor hclge_mac_link_status_wait and add wait until mac link down
+        https://gitee.com/openeuler/kernel/pulls/1093 vfio-pci: Match specific devices with vendor id and device id
+        https://gitee.com/openeuler/kernel/pulls/1085 irqchip/gicv3-its: Add workaround for hip09 ITS erratum 162100801
+        https://gitee.com/openeuler/kernel/pulls/1095 irqchip: gic-v3: Collection table support muti pages
+        https://gitee.com/openeuler/kernel/pulls/1081  some backport bugfix for sockmap
+        https://gitee.com/openeuler/kernel/pulls/1077  drm/qxl: Fix missing free_irq
+        https://gitee.com/openeuler/kernel/pulls/1087 genirq: Increase the number of IRQ descriptors
+        https://gitee.com/openeuler/kernel/pulls/1063 i2c: hisi: Only handle the interrupt of the driver's transfer
+        https://gitee.com/openeuler/kernel/pulls/1059 [sync] PR-1028:  fs: hfsplus: fix UAF issue in hfsplus_put_super
+        https://gitee.com/openeuler/kernel/pulls/1042  xfrm: Reinject transport-mode packets through workqueue
+        https://gitee.com/openeuler/kernel/pulls/1069  support ACPI for MPAM 2.0
+        https://gitee.com/openeuler/kernel/pulls/1070 crypto: hisilicon - fix some reset problem
+        https://gitee.com/openeuler/kernel/pulls/1026 [sync] PR-947:  locking/rwsem: Prevent potential lock starvation
+        https://gitee.com/openeuler/kernel/pulls/1022 [sync] PR-978:  io_uring: fix the problem of running
+        https://gitee.com/openeuler/kernel/pulls/1045 perf: hisi: delete global enable pmu from xxx_write_counter()
+        https://gitee.com/openeuler/kernel/pulls/1037  xfs: fixes patchs and backport patchs
+        https://gitee.com/openeuler/kernel/pulls/1048 spi: dw: Add support for 32-bits max xfer size
+        https://gitee.com/openeuler/kernel/pulls/1055 Complementing PTT functions to the openEuler-22.03-LTS-SP2
+        https://gitee.com/openeuler/kernel/pulls/1005 scsi: hisi_sas: A group of SAS-related bugfixes
+        https://gitee.com/openeuler/kernel/pulls/1052 [sync] PR-1027: scripts: Fix issue of module signing with openssl 3.x
+        https://gitee.com/openeuler/kernel/pulls/1039 [sync] PR-1032: bugfix the lost interruption problem after live migration
+        https://gitee.com/openeuler/kernel/pulls/996 [sync] PR-990:  ubi: Fix deadlock caused by recursively holding work_sem
+        https://gitee.com/openeuler/kernel/pulls/1001 [sync] PR-928:  hikey9xx: Fixed incorrect use of kfree to free sreg
+        https://gitee.com/openeuler/kernel/pulls/1018 [sync] PR-944:  nbd: get config_lock before sock_shutdown
+        https://gitee.com/openeuler/kernel/pulls/1033 perf: hns3: add event suppport for ROH and default use hardware event 0 as group leader event
+        https://gitee.com/openeuler/kernel/pulls/1012 [sync] PR-924:  dm: add disk before alloc dax
+        https://gitee.com/openeuler/kernel/pulls/1015 [sync] PR-920:  dm thin: Fix ABBA deadlock by resetting dm_bufio_client
+        https://gitee.com/openeuler/kernel/pulls/1020 [sync] PR-1003: roh: Fix ROH multi-BD cmdq issue
+        https://gitee.com/openeuler/kernel/pulls/1009 [sync] PR-980: crypto: hisilicon - fix mailbox operation process
+        https://gitee.com/openeuler/kernel/pulls/952 [sync] PR-929:  xfs: rework feature flags
+        https://gitee.com/openeuler/kernel/pulls/982 [sync] PR-356: x86/boot/compressed: Register dummy NMI handler in EFI boot loader, to avoid kdump crashes
+        https://gitee.com/openeuler/kernel/pulls/973 [sync] PR-969:  kobject: Fix slab-out-of-bounds in fill_kobj_path()
+        https://gitee.com/openeuler/kernel/pulls/988 [sync] PR-954:  block: iocost bugfix
+        https://gitee.com/openeuler/kernel/pulls/985 [sync] PR-946:  icost bugfix
+        https://gitee.com/openeuler/kernel/pulls/1006 drivers/perf: hisi: Don't migrate perf to the CPU going to teardown
+        https://gitee.com/openeuler/kernel/pulls/993 Clean up for RDMA/HNS
+        https://gitee.com/openeuler/kernel/pulls/979 [sync] PR-943: Fixed the accelerator capability register issue.
+        https://gitee.com/openeuler/kernel/pulls/981 [sync] PR-967:  Support dynamic_hugetlb on arm64 and fix some bug
+        https://gitee.com/openeuler/kernel/pulls/989 [sync] PR-940: net: hns3: related bugfixes, refactoring, and cleanup
+        https://gitee.com/openeuler/kernel/pulls/992 [sync] PR-949:  mm: page_counter: remove unneeded atomic ops for low/min
+        https://gitee.com/openeuler/kernel/pulls/977 [sync] PR-968:  Fix ORC unwinder on paravirt {save,restore}_fl
+        https://gitee.com/openeuler/kernel/pulls/964 [sync] PR-937:  tcp: restrict net.ipv4.tcp_app_win
+        https://gitee.com/openeuler/kernel/pulls/961 [sync] PR-925:  tcp: prohibit TCP_REPAIR_OPTIONS if data was already sent
+        https://gitee.com/openeuler/kernel/pulls/957 [sync] PR-938:  config: Disable CONFIG_EULER_FS by default
+        https://gitee.com/openeuler/kernel/pulls/933 [sync] PR-922:  jbd2: fix checkpoint inconsistent
+        https://gitee.com/openeuler/kernel/pulls/923 [sync] PR-918: Misc fixes for Kunpeng accelerator drivers!
+        https://gitee.com/openeuler/kernel/pulls/914 [sync] PR-906:  ipv6: Add lwtunnel encap size of all siblings in nexthop calculation
+        https://gitee.com/openeuler/kernel/pulls/921 [sync] PR-919:  Revert "ext4: dio take shared inode lock when overwriting preallocated blocks"
+        https://gitee.com/openeuler/kernel/pulls/898 [sync] PR-894: Fixed two accelerator bugfixes
+        https://gitee.com/openeuler/kernel/pulls/908 [sync] PR-874: nic: hns3: fix pointer cast for wol and fix getting GE port lanes error and set cpu affinity
+        https://gitee.com/openeuler/kernel/pulls/909 [sync] PR-907:  tcp/dccp: Add another way to allocate local ports in connect()
+        https://gitee.com/openeuler/kernel/pulls/893 mitigatin cacheline false sharing
+        https://gitee.com/openeuler/kernel/pulls/903 backport block bugfix
+        https://gitee.com/openeuler/kernel/pulls/899 [sync] PR-895:  config: enable CONFIG_BPF_STREAM_PARSER=y on arm64
+        https://gitee.com/openeuler/kernel/pulls/888 [sync] PR-881: arm64: Keep HWCAP2_WFXT uapi consistent with upstream
+        https://gitee.com/openeuler/kernel/pulls/885 [sync] PR-860: [OLK-5.10] Add support for Emerald Rapids to powercap/intel_rapl driver.
+        https://gitee.com/openeuler/kernel/pulls/878 Bugfixes for RDMA/hns
+        https://gitee.com/openeuler/kernel/pulls/879 [sync] PR-877: sched: fix performance degradation on lmbench
+        https://gitee.com/openeuler/kernel/pulls/871 [sync] PR-866:  arm64: kdump: Avoid reserving low memory repeatedly
+        https://gitee.com/openeuler/kernel/pulls/872 [sync] PR-863:  Backport CVEs and bugfixes
+
+议题二：
+KABI新增接口 --- 张伽琳
+https://gitee.com/openeuler/kernel/issues/I7CBAP
+https://gitee.com/src-openeuler/kernel/commit/f4b3bcd976db08077e6ccd3741244c785d0bce0c
+
+议题三：smc-r功能以及开源社区对其性能优化方面的介绍
+smc-r功能以及其性能优化方面的介绍
+
+议题四：龙芯申请添加两个commiter
+@lixuefeng-loongson 李雪峰
+@maobibo 毛碧波
+结论：先参与一段时间的社区贡献，再加入commiter，先提PR更新openEuler/MAINTAINERS
+
+三、本期遗留问题
+KABI新增接口：有兼容性SIG分析结论再同步到kernel sig
+
+温馨提醒：请在接入会议后修改参会人的姓名，也可以使用您在gitee.com的ID
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+【2023/6/2 Kernel SIG 双周例会】
+会议时间：2023年6月2日 14:00-15:30
+轮值主持：廖涛
+下次轮值主持：郑增凯
+
+会议链接：https://us06web.zoom.us/j/89684516659?pwd=QWwyVURRUlhpVjY1RmhTVFFqeit3Zz09
+ 
+会议纪要：https://etherpad.openeuler.org/p/Kernel-meetings
+
+一、上期遗留问题跟踪
+
+二、议题列表
+
+议题一：进展update --- 张伽琳 & 郑增凯
+近两周(2023.5.22 ~ 6.2)内进展同步:
+        总体上OLK-5.10主干更新到tag 5.10.0-153.0.0 -> openEuler-22.03-LTS-SP2
+        openEuler-22.03-LTS维护分支更新到tag 5.10.0-60.96.0，
+                对应rpm包下载地址: https://repo.openeuler.org/openEuler-22.03-LTS/update/
+        openEuler-22.03-LTS-SP1分支，更新到tag 5.10.0-136.34.0，
+        release ISO获取链接: https://repo.openeuler.org/openEuler-22.03-LTS-SP1/ISO/
+                对应update rpm包下载地址:
+                https://repo.openeuler.org/openEuler-22.03-LTS-SP1/update/aarch64/Packages/
+        以OLK-5.10为例:
+        从 5.10.0-149.0.0 更新至 5.10.0-153.0.0, 回合补丁数349个
+        git log 5.10.0-149.0.0..5.10.0-153.0.0 --oneline | wc -l
+        349
+
+        其中
+        OLK-5.10分支回合CVE补丁2个:
+        CVE-2023-32233
+        CVE-2023-2124
+
+        同步linux 5.10.y社区LTS补丁集2个：5.10.152...5.10.153
+
+        OLK-5.10合入PR:
+
+        混部CPU多优先级特性:
+        sched/fair: Introduce multiple qos level https://gitee.com/openeuler/kernel/pulls/795
+
+        uswap特性:
+        Support userswap feature https://gitee.com/openeuler/kernel/pulls/786
+
+        进程、容器级别KSM使能:
+        mm: enable ksm per process and cgroup https://gitee.com/openeuler/kernel/pulls/790
+
+        GCC value profile特性:
+        Compiler: Add value profile support for kernel. https://gitee.com/openeuler/kernel/pulls/773
+
+        华为智能网卡hinic3驱动:
+        Add Huawei Intelligent Network Card Driver: hinic3 https://gitee.com/openeuler/kernel/pulls/835
+        
+        云芯智联3snic网卡驱动:
+        Net: ethernet: Support 3snic 3s9xx network card https://gitee.com/openeuler/kernel/pulls/608
+
+        查询BPF程序是否附加到sockmap:
+        bpf: support BPF_PROG_QUERY for progs attached to sockmap https://gitee.com/openeuler/kernel/pulls/798
+        
+        x86开启CONFIG_BCACHE内核配置:
+        openEuler supports bcache by default on x86 platforms https://gitee.com/openeuler/kernel/pulls/782
+        
+        performance:
+        A patchset of sched to improve benchmark performance https://gitee.com/openeuler/kernel/pulls/844
+
+        kvm:
+        fix  test_vmxon failed https://gitee.com/openeuler/kernel/pulls/601
+        Fix kvm-unit-tests  vmx_cr4_osxsave_test  case failed https://gitee.com/openeuler/kernel/pulls/739
+
+        hisilicon:
+        net: hns3: add support for Hisilicon ptp sync device https://gitee.com/openeuler/kernel/pulls/842
+        Backport bugfixes for RDMA/hns https://gitee.com/openeuler/kernel/pulls/837
+        ACC support no-sva feature https://gitee.com/openeuler/kernel/pulls/803
+        perf/smmuv3: Enable HiSilicon Erratum quirk https://gitee.com/openeuler/kernel/pulls/851
+        Support T6 ETM and Workaround CPU hung bug on hip09 https://gitee.com/openeuler/kernel/pulls/848
+        Add support for HiSilicon UC/H60PA/PAv3 PMU driver https://gitee.com/openeuler/kernel/pulls/805
+        crypto: hisilicon/qm - support dumping stop queue status https://gitee.com/openeuler/kernel/pulls/791
+        scsi: hisi_sas: The IO timeout mechanism and error handling related bugfix https://gitee.com/openeuler/kernel/pulls/794
+
+        Intel EMR Support:
+        intel: backport  uncore-freq current  frequency sysfs related patches https://gitee.com/openeuler/kernel/pulls/840
+        intel: backport intel-pstate patches for Server platforms https://gitee.com/openeuler/kernel/pulls/839
+        x86 FPU/AMX bug fix since kernel v5.18 https://gitee.com/openeuler/kernel/pulls/789
+        Intel: Support In Field Scan(IFS) Array BIST https://gitee.com/openeuler/kernel/pulls/787
+        Intel: backport split lock EMR  CPU support for OLK 5.10 https://gitee.com/openeuler/kernel/pulls/781
+
+        LoongArch:
+        LoongArch: kvm: add pv ipi support https://gitee.com/openeuler/kernel/pulls/793
+        LoongArch: defconfig: enable memory and pci hotplug related configs for LoongArch https://gitee.com/openeuler/kernel/pulls/809
+        net: stmmac: fix potential double free of dma descriptor resources https://gitee.com/openeuler/kernel/pulls/761
+        LoongArch: kvm: fix bug of kvm's hugepage https://gitee.com/openeuler/kernel/pulls/760
+        LoongArch: fix some stability issues https://gitee.com/openeuler/kernel/pulls/765
+
+        Zhaoxin:
+        [OLK-5.10] cpufreq: ACPI: Add Zhaoxin/Centaur turbo boost control interface support https://gitee.com/openeuler/kernel/pulls/547
+        [OLK-5.10] ACPI, x86: Improve Zhaoxin processors support for NONSTOP TSC https://gitee.com/openeuler/kernel/pulls/544
+        [OLK-5.10] x86/acpi/cstate: Optimize ARB_DISABLE on Centaur CPUs https://gitee.com/openeuler/kernel/pulls/545
+
+        sw64:
+        update patches for sw64 architecture https://gitee.com/openeuler/kernel/pulls/777
+
+        3snic:
+        Net: ethernet: 3snic 3s9xx network driver add "select NET_DEVLINK" https://gitee.com/openeuler/kernel/pulls/824
+
+        m1600:
+        Net: m1600: Fix build err https://gitee.com/openeuler/kernel/pulls/820
+
+议题二：
+混部CPU多优先级特性   -- 赵文晖
+loongarch kdump 支持情况介绍  -- 唐友灵
+
+议题三：
+京东-桑力鹏申请成为Maintainer   -- 桑力鹏
+总结京东在openEuler上的贡献，探讨进一步合作，期待深入参与到openEuler社区工作
+个人处理了900+issue，参与评审PR
+结论：通过
+
+议题四：
+openEuler kernel Maintainer 职责说明、申请机制讨论
+
+三、本期遗留问题
+
+温馨提醒：请在接入会议后修改参会人的姓名，也可以使用您在gitee.com的ID
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+【2023/5/19 Kernel SIG 双周例会】
+会议时间：2023年5月19日 14:00-15:30
+轮值主持：廖涛
+下次轮值主持：郑增凯
+
+会议链接：https://us06web.zoom.us/j/87319358677?pwd=dVFTTkYxNTR0TStZUEVsWFZaVmtOUT09
+ 
+会议纪要：https://etherpad.openeuler.org/p/Kernel-meetings
+
+一、上期遗留问题跟踪
+需求PR审视、简单汇报
+
+二、议题列表
+
+议题一：进展update --- 张伽琳 & 郑增凯
+近两周(2023.5.8 ~ 5.19)内进展同步:
+        总体上OLK-5.10主干更新到tag 5.10.0-149.0.0
+        openEuler-22.03-LTS维护分支更新到tag 5.10.0-60.94.0，
+                对应rpm包下载地址: https://repo.openeuler.org/openEuler-22.03-LTS/update/
+        openEuler-22.03-LTS-SP1分支，更新到tag 5.10.0-136.32.0，
+        release ISO获取链接: https://repo.openeuler.org/openEuler-22.03-LTS-SP1/ISO/
+                对应update rpm包下载地址:
+                https://repo.openeuler.org/openEuler-22.03-LTS-SP1/update/aarch64/Packages/
+        以OLK-5.10为例:
+        从 5.10.0-148.0.0 更新至 5.10.0-149.0.0, 回合补丁数365个
+        git log 5.10.0-148.0.0..5.10.0-149.0.0 --oneline | wc -l
+        365
+
+        其中
+        OLK-5.10分支回合CVE补丁13个:
+        CVE-2023-32269
+        CVE-2023-2002
+        CVE-2023-26544
+        CVE-2023-0459
+        CVE-2022-4382
+        CVE-2023-0458
+        CVE-2023-2269
+        CVE-2023-2483
+        CVE-2023-31436
+        CVE-2023-2194
+        CVE-2023-2166
+        CVE-2023-2176
+        CVE-2023-2007
+
+        同步linux 5.10.y社区LTS补丁集1个：5.10.151
+
+        OLK-5.10合入PR:
+
+        DAMON:
+        DAMON features: Support for process-level hot and cold data recognition and adjustment. https://gitee.com/openeuler/kernel/pulls/763
+
+        QOS_SMT_EXPELL priority reversion mechanism:
+        sched/fair: Introduce QOS_SMT_EXPELL priority reversion mechanism https://gitee.com/openeuler/kernel/pulls/640
+
+        m1600:
+        Net: m1600: Support nebula-matrix m1600-series network card https://gitee.com/openeuler/kernel/pulls/570
+
+        kvm:
+        arm64: Add initial support for FEAT_WFxT https://gitee.com/openeuler/kernel/pulls/629
+
+        timekeeping:
+        timekeeping: Make  CLOCKSOURCE_VALIDATE_LAST_CYCLE configurable https://gitee.com/openeuler/kernel/pulls/772
+
+        Intel EMR Support:
+        intel: backport intel-idle support for EMR https://gitee.com/openeuler/kernel/pulls/749
+        intel: backport intel-uncore-freq support for EMR https://gitee.com/openeuler/kernel/pulls/748
+        SPR: EDAC driver enhance for driver decode and 2LM https://gitee.com/openeuler/kernel/pulls/742
+        Intel: Add PMU support for Intel Emerald Rapids https://gitee.com/openeuler/kernel/pulls/622
+        Intel: Add RAPL support for Emerald Rapids(EMR) https://gitee.com/openeuler/kernel/pulls/615
+        Intel SPR fast rep string operations support https://gitee.com/openeuler/kernel/pulls/624
+        Intel: SGX incremental backporting patches until upstream 6.3 https://gitee.com/openeuler/kernel/pulls/594
+        Intel: Recover two microcode interfaces when support In Field Scan(IFS) multi-blob images https://gitee.com/openeuler/kernel/pulls/580
+        OLK-5.10: x86/cpu: Add several Intel server CPU model numbers https://gitee.com/openeuler/kernel/pulls/469
+
+        LoongArch:
+        LoongArch: add kexec&kdump support https://gitee.com/openeuler/kernel/pulls/766
+        net: hns3: Backport wol feature and some hns3 bugfix https://gitee.com/openeuler/kernel/pulls/758
+        usb: disable soft retry for EJ188 controller https://gitee.com/openeuler/kernel/pulls/564
+
+        hisilicon:
+        Accelerator Linux Mainline Patch Round https://gitee.com/openeuler/kernel/pulls/634
+        sched/fair: Scan cluster before scanning LLC in wake-up path https://gitee.com/openeuler/kernel/pulls/169
+        backport some bug fix for page pool https://gitee.com/openeuler/kernel/pulls/678
+        drivers/coresight: Add UltraSoc System Memory Buffer driver https://gitee.com/openeuler/kernel/pulls/596
+        backport some PCC driver patches https://gitee.com/openeuler/kernel/pulls/636
+
+        arm64/mpam
+        arm64/mpam: modify mpam irq register error log https://gitee.com/openeuler/kernel/pulls/753
+        
+        driver/hifc&hinic:
+        driver/hifc&hinic: Fix compile error in allyesconfigs https://gitee.com/openeuler/kernel/pulls/675
+
+        zhaoxin:
+        [HUST CSE] fix a use-after-free bug in uncore_pci_remove() https://gitee.com/openeuler/kernel/pulls/665
+
+
+议题二：SP2特性串讲
+        DAMON特性: https://gitee.com/openeuler/kernel/issues/I6MRUG
+        DAMON features: Support for process-level hot and cold data recognition and adjustment. https://gitee.com/openeuler/kernel/pulls/763
+
+        混部SMT驱离防止优先级反转特性: https://gitee.com/openeuler/kernel/issues/I6SIY2
+        sched/fair: Introduce QOS_SMT_EXPELL priority reversion mechanism https://gitee.com/openeuler/kernel/pulls/640
+
+        Introduce dynamic affinity for scheduler: https://gitee.com/openeuler/kernel/issues/I526XC
+        sched: Supprot dynamic affinity in scheduler https://gitee.com/openeuler/kernel/pulls/256
+
+三、本期遗留问题
+
+
+温馨提醒：请在接入会议后修改参会人的姓名，也可以使用您在gitee.com的ID
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+【2023/5/5 Kernel SIG 双周例会】
+会议时间：2023年5月5日 14:00-15:30
+轮值主持：郑增凯
+下次轮值主持：廖涛
+
+会议链接：https://us06web.zoom.us/j/84858762199?pwd=WVE1eGJXcEp1K1FYcDM1U0k3L2Z3QT09
+ 
+会议纪要：https://etherpad.openeuler.org/p/Kernel-meetings
+
+一、上期遗留问题跟踪
+
+二、议题列表
+
+议题一：进展update --- 张伽琳 & 郑增凯
+近两周(2023.4.17 ~ 5.5)内进展同步:
+        总体上OLK-5.10主干更新到tag 5.10.0-148.0.0
+        openEuler-22.03-LTS维护分支更新到tag 5.10.0-60.92.0，
+                对应rpm包下载地址: https://repo.openeuler.org/openEuler-22.03-LTS/update/
+        openEuler-22.03-LTS-SP1分支，更新到tag 5.10.0-136.30.0，
+        release ISO获取链接: https://repo.openeuler.org/openEuler-22.03-LTS-SP1/ISO/
+                对应update rpm包下载地址:
+                https://repo.openeuler.org/openEuler-22.03-LTS-SP1/update/aarch64/Packages/
+        以OLK-5.10为例:
+        从 5.10.0-147.0.0 更新至 5.10.0-148.0.0, 回合补丁数533个
+        git log 5.10.0-147.0.0..5.10.0-148.0.0 --oneline | wc -l
+        533
+
+        其中
+        OLK-5.10分支回合CVE补丁14个:
+        CVE-2023-1855
+        CVE-2023-2006
+        CVE-2023-30772
+        CVE-2023-1872
+        CVE-2023-1829
+        CVE-2022-36280
+        CVE-2022-1015
+        CVE-2023-1989
+        CVE-2023-30456
+        CVE-2023-1990
+        CVE-2023-1998
+        CVE-2023-1859
+        CVE-2023-1670
+        CVE-2023-1611
+
+        同步linux 5.10.y社区LTS补丁集1个：5.10.150
+
+        OLK-5.10合入PR:
+
+        hisi_sas:
+        The driver modifies the configuration of SAS link establishment and link stability. https://gitee.com/openeuler/kernel/pulls/644
+        Bugfixes related to SAS error handling, DIF, and low power consumption https://gitee.com/openeuler/kernel/pulls/618
+        SAS-related bugfix：rolls back these policies without disabling the hard disk PHY. https://gitee.com/openeuler/kernel/pulls/503
+        
+        RDMA/hns:
+        Fix errors related to bond and rq inline https://gitee.com/openeuler/kernel/pulls/639
+        Support geting xrcd num from firmware https://gitee.com/openeuler/kernel/pulls/617
+        Add SVE DIRECT WQE flag to support libhns https://gitee.com/openeuler/kernel/pulls/581
+
+        net/hns3:
+        net: hns3: add support handling tx dhcp packets for  ROH https://gitee.com/openeuler/kernel/pulls/381
+        net: hns3: supports customization requirements https://gitee.com/openeuler/kernel/pulls/616
+        net: hns3: add supports customization requirements and fix vf fault detect err https://gitee.com/openeuler/kernel/pulls/611
+        
+        AMD:
+        AMD: Fix build warning. https://gitee.com/openeuler/kernel/pulls/625
+        
+        pci:
+        vfio/pci: Fix mistakenly deleted "vdev->num_regions" https://gitee.com/openeuler/kernel/pulls/630
+        PCI: Support BAR sizes up to 8TB https://gitee.com/openeuler/kernel/pulls/600
+        
+        SP2 PR 最晚6月3日之前合入
+
+议题二：内核热升级社区进展与讨论  --- 曾昭荣
+介绍业界内核热升级发展动态：开源操作系统技术年度会议 字节跳动基础架构部内核团队 -- 面向云服务的内核热升级探索
+
+议题三：openEuler-1.0-LTS maintainer由原来的裘来彬更新成章昌仲
+擅长领域：网络
+主要负责：版本发布、CVE闭环
+结论：通过
+
+      
+
+三、本期遗留问题
+需求PR审视、简单汇报
+
+温馨提醒：请在接入会议后修改参会人的姓名，也可以使用您在gitee.com的ID
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+【2023/4/7 Kernel SIG 双周例会】
+会议时间：2023年4月7日 14:00-15:30
+轮值主持：廖涛
+下次轮值主持：郑增凯
+
+会议链接：https://us06web.zoom.us/j/88353599877?pwd=aFZtMjJwUHl1UmNTZFV4eUJQM2xVdz09
+ 
+会议纪要：https://etherpad.openeuler.org/p/Kernel-meetings
+
+一、上期遗留问题跟踪
+
+二、议题列表
+
+议题一：进展update --- 张伽琳 & 郑增凯
+
+近两周(2023.3.27 ~ 4.7)内进展同步:
+        总体上OLK-5.10主干更新到tag 5.10.0-147.0.0
+        openEuler-22.03-LTS维护分支更新到tag 5.10.0-60.89.0，
+                对应rpm包下载地址: https://repo.openeuler.org/openEuler-22.03-LTS/update/
+        openEuler-22.03-LTS-SP1分支，更新到tag 5.10.0-136.27.0，
+        release ISO获取链接: https://repo.openeuler.org/openEuler-22.03-LTS-SP1/ISO/
+                对应update rpm包下载地址:
+                https://repo.openeuler.org/openEuler-22.03-LTS-SP1/update/aarch64/Packages/
+        以OLK-5.10为例：
+        从 5.10.0-145.0.0 更新至 5.10.0-147.0.0, 回合补丁数91个
+        git log 5.10.0-145.0.0..5.10.0-147.0.0 --oneline | wc -l
+        91
+
+        其中
+        OLK-5.10分支回合CVE补丁12个：
+        CVE-2023-1513
+        CVE-2022-4269
+        CVE-2023-0266
+        CVE-2023-1281
+        CVE-2022-48423
+        CVE-2023-1249
+        CVE-2022-48425
+        CVE-2022-48424
+        CVE-2023-28327
+        CVE-2023-28466
+        CVE-2023-1380
+        CVE-2023-23004
+
+        OLK-5.10合入PR:
+
+        LoongArch:
+        LoongArch: fix compile warnning of drm/loongson driver https://gitee.com/openeuler/kernel/pulls/539
+        LoongArch: fix dual-bridge machine can not work https://gitee.com/openeuler/kernel/pulls/510
+        Loongson: fix 7a2000 gpu driver can not work https://gitee.com/openeuler/kernel/pulls/509
+
+        Hisilicon:
+        net: hns3: modify reset delay time to avoid configuration timeout https://gitee.com/openeuler/kernel/pulls/556
+        Disable local invalidate operation, fix memory leak and error code of CMD https://gitee.com/openeuler/kernel/pulls/538
+        i2c: hisi: Only use the completion interrupt to finish the transfer and i2c: hisi: Avoid redundant interrupts https://gitee.com/openeuler/kernel/pulls/527
+        net: hns3: add supports storage product scustomization requirements https://gitee.com/openeuler/kernel/pulls/525
+        Add new command to support query vf caps https://gitee.com/openeuler/kernel/pulls/519
+
+        KVM:
+        KVM: arm64: Add minimal handling for the ARMv8.7 PMU https://gitee.com/openeuler/kernel/pulls/507
+
+        sssraid:
+        SCSI: SSSRAID: Fix the bug that system automatically reboot when issue a 'pcie-linkdown' command https://gitee.com/openeuler/kernel/pulls/508
+        
+        PR先合主干，后续拉SP2分支
+
+议题二：openEuler-22.03-LTS-SP2需求评审 
+Intel EMR Support  -- 曾昭荣（Intel 新CPU前期支持，小新特性提交）
+Introduce dynamic affinity for scheduler    -- 唐辉（解决服务器多核场景下的业务干扰问题，PR已提）
+混部SMT驱离防止优先级反转特性  -- 关景
+Damon 特性  -- 左泽（内存访问框架，新特性合入）
+Kernel新增星云智联板卡N1045XS网卡驱动  -- 刘彦泽
+建议开启x86架构 的CONFIG_BCACHE内核配置 -- 朱超
+
+议题三：新增兼容性组committer ---刘彦泽
+https://gitee.com/openeuler/community/pulls/4604
+新增：杜开田（@jimmy_hero）、刘彦泽（@ygn-ndwd-official）为Kernel SIG组的committer
+代表Compatibility-Infra SIG组，负责第三方驱动支持
+
+结论：通过
+
+三、本期遗留问题
+
+温馨提醒：请在接入会议后修改参会人的姓名，也可以使用您在gitee.com的ID
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+【2023/3/24 Kernel SIG 双周例会】
+会议时间：2023年3月24日 14:00-15:30
+轮值主持：郑增凯
+下次轮值主持：廖涛
+
+会议链接：https://us06web.zoom.us/j/85131900036?pwd=RFZVYlZFK3B1RVhpTHROOW82OTdLQT09
+ 
+会议纪要：https://etherpad.openeuler.org/p/Kernel-meetings
+
+一、上期遗留问题跟踪
+
+二、议题列表
+
+议题一：进展update（10min）  --- 张伽琳 & 郑增凯
+近两周(2023.3.13 ~ 3.24)内进展同步:
+        总体上OLK-5.10主干更新到tag 5.10.0-145.0.0
+        openEuler-22.03-LTS维护分支更新到tag 5.10.0-60.86.0，
+                对应rpm包下载地址: https://repo.openeuler.org/openEuler-22.03-LTS/update/
+        openEuler-22.03-LTS-SP1分支，更新到tag 5.10.0-136.24.0，
+                release ISO获取链接: https://repo.openeuler.org/openEuler-22.03-LTS-SP1/ISO/
+                对应update rpm包下载地址:
+                https://repo.openeuler.org/openEuler-22.03-LTS-SP1/update/aarch64/Packages/
+        以OLK-5.10为例：
+        从 5.10.0-144.0.0 更新至 5.10.0-145.0.0, 回合补丁数188个
+        git log 5.10.0-144.0.0..5.10.0-145.0.0 --oneline | wc -l
+        188
+
+        其中
+        OLK-5.10分支回合CVE补丁5个：
+        CVE-2023-28328
+        CVE-2023-1382
+        CVE-2023-1079
+        CVE-2023-1074
+        CVE-2023-23000
+
+        OLK-5.10合入PR:
+
+        LoongArch:
+        LoongArch: fix failed to boot https://gitee.com/openeuler/kernel/pulls/476
+        LoongArch: update network related default config https://gitee.com/openeuler/kernel/pulls/479
+        LoongArch: fix some pci problems https://gitee.com/openeuler/kernel/pulls/448
+        tools: fix compile error introduced by LoongArch commit https://gitee.com/openeuler/kernel/pulls/477
+        add perf loongarch support https://gitee.com/openeuler/kernel/pulls/447
+        LoongArch: add kvm support https://gitee.com/openeuler/kernel/pulls/449
+        LoongArch: fix compile error when using make allmodconfig https://gitee.com/openeuler/kernel/pulls/466
+        LoongArch: some LS7a device drivers support and LoongArch bug fix https://gitee.com/openeuler/kernel/pulls/444
+
+        Hisilicon hns:
+        Support congestion control algorithm parameter configuration https://gitee.com/openeuler/kernel/pulls/475
+        Support the feature of querying stats https://gitee.com/openeuler/kernel/pulls/427
+
+        Intel In Field Scan (IFS):
+        Intel: Support In Field Scan(IFS) multi-blob images https://gitee.com/openeuler/kernel/pulls/471
+
+        security landlock:
+        Add landlock support https://gitee.com/openeuler/kernel/pulls/388
+
+        sw64 architecture:
+        update patches for sw64 architecture https://gitee.com/openeuler/kernel/pulls/425
+        
+        openEuler-22.03-LTS-SP2 需求收集，
+        需求收集截止时间20230407
+     
+
+议题二： Intel In Field Scan multi-test images的支持 --- 施爱春
+
+议题三：新增鲲鹏committer
+https://gitee.com/openeuler/community/pulls/4501/
+https://gitee.com/openeuler/kernel/pulls/424/
+结论：通过
+
+三、本期遗留问题
+
+温馨提醒：请在接入会议后修改参会人的姓名，也可以使用您在gitee.com的ID
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+【2023/3/10 Kernel SIG 双周例会】
+会议时间：2023年3月10日 14:00-15:30
+轮值主持：廖涛
+下次轮值主持：郑增凯
+
+会议链接：https://us06web.zoom.us/j/87191608489?pwd=eG96T0p2Y0NDRUdHOW9SYys5SElTQT09
+ 
+会议纪要：https://etherpad.openeuler.org/p/Kernel-meetings
+
+一、上期遗留问题跟踪
+1、openEuler缺陷issue处理流程介绍
+2、内核热升级下一步规划，需求讨论
+
+二、议题列表
+
+议题一：进展update（10min）  --- 张伽琳 & 郑增凯
+近两周(2023.2.27 ~ 3.10)内进展同步:
+        总体上OLK-5.10主干更新到tag 5.10.0-144.0.0
+        openEuler-22.03-LTS维护分支更新到tag 5.10.0-60.84.0，
+                对应rpm包下载地址: https://repo.openeuler.org/openEuler-22.03-LTS/update/
+        openEuler-22.03-LTS-SP1分支，更新到tag 5.10.0-136.22.0，
+                release ISO获取链接: https://repo.openeuler.org/openEuler-22.03-LTS-SP1/ISO/
+                对应update rpm包下载地址:
+                https://repo.openeuler.org/openEuler-22.03-LTS-SP1/update/aarch64/Packages/
+        
+        以OLK-5.10为例：
+        从 5.10.0-143.0.0 更新至 5.10.0-144.0.0, 回合补丁数157个
+        git log 5.10.0-143.0.0..5.10.0-144.0.0 --oneline | wc -l
+        157
+
+        其中：
+        OLK-5.10分支回合CVE补丁14个：
+        CVE-2023-23000
+        CVE-2023-1118
+        CVE-2023-1073
+        CVE-2022-27672
+        CVE-2023-0461
+        CVE-2023-1075
+        CVE-2023-22995
+        CVE-2023-26607
+        CVE-2023-1078
+        CVE-2023-1076
+        CVE-2023-26545
+        CVE-2023-0045
+        CVE-2023-20938
+        CVE-2023-0240
+
+        OLK-5.10合入PR:
+        scsi:
+        scsi:sssraid: Introduce map_queue in sssraid module & code quality reinforcement content https://gitee.com/openeuler/kernel/pulls/426
+        sharepool:
+        OLK-5.10 backport sharepool and config isolation patches https://gitee.com/openeuler/kernel/pulls/443
+        hbm:
+        add drivers to support hbm memory and hbm cache https://gitee.com/openeuler/kernel/pulls/451
+        ACPI:
+        ACPI: Add Platform Runtime Mechanism(PRM) feature support https://gitee.com/openeuler/kernel/pulls/413
+        RDMA/hns:
+        Fixed the following errors: The reset with stream fails, the query of AH attr is invalid and the RoCE Bonding https://gitee.com/openeuler/kernel/pulls/402
+        netswift:
+        [5.10]Make Multiple functions On Netswift PCIE NIC belong to different IOMMU group https://gitee.com/openeuler/kernel/pulls/332
+
+议题二：内核热升级使用及技术探讨和规划  ---桑琰
+内核热升级技术原理介绍；应用场景、升级时间、下一步工作规划等讨论
+与超聚变、intel、云核等加强后续交流探讨，看能否进一步合作
+
+议题三：kernel sig committer新增：
+
+    桑力鹏( 京东科技)：在离线混部（调度、内存、I/O、虚拟化、容器）、自研特性、几十人团队支撑
+
+    结论：通过，具体子系统征求其他模块committer意见，逐步深入
+
+     李炜(华为)：ARM体系结构
+
+    结论：通过
+
+
+三、本期遗留问题
+
+
+温馨提醒：请在接入会议后修改参会人的姓名，也可以使用您在gitee.com的ID
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+【2023/2/24 Kernel SIG 双周例会】
+会议时间：2023年2月24日 14:00-15:30
+轮值主持：郑增凯
+下次轮值主持：廖涛
+
+会议链接：https://us06web.zoom.us/j/82111503728?pwd=TWRGa2REc0V2ZmlGZ2ZreUF1OXA3dz09
+ 
+会议纪要：https://etherpad.openeuler.org/p/Kernel-meetings
+
+一、上期遗留问题跟踪
+
+二、议题列表
+
+议题一：进展update（10min）  --- 张伽琳 & 郑增凯
+近两周(2023.2.10 ~ 2.24)内进展同步：
+        总体上
+        OLK-5.10主干更新tag 至5.10.0-142.0.0
+        openEuler-22.03-LTS维护分支更新tag至5.10.0-60.82.0，
+                对应rpm包下载地址：https://repo.openeuler.org/openEuler-22.03-LTS/update/
+        openEuler-22.03-LTS-SP1分支，更新到tag 5.10.0-136.20.0，
+                release ISO获取链接： https://repo.openeuler.org/openEuler-22.03-LTS-SP1/ISO/
+                对应update rpm包下载地址：
+                https://repo.openeuler.org/openEuler-22.03-LTS-SP1/update/aarch64/Packages/
+        以openEuler-22.03-LTS-SP1为例：
+        从5.10.0-136.18.0 更新至5.10.0-136.20.0，回合补丁数395个
+        git log 5.10.0-136.18.0..5.10.0-136.20.0 --oneline | wc -l
+        395
+        主要是CVE，内存、网络、文件系统相关bugfix，同步linux 5.10.y 社区LTS补丁集
+        
+        openEuler-22.03-LTS-SP1分支回合CVE补丁2个:
+        CVE-2023-0597
+        CVE-2023-0615
+
+        同步linux 5.10.y 社区LTS补丁集7个：5.10.143 - 5.10.149
+
+        openEuler-22.03-LTS-SP1合入PR: 2 个:
+        net:
+        anolis: bond: broadcast ARP or ND messages to all slaves https://gitee.com/openeuler/kernel/pulls/346
+        kvm:
+        kvm: arm64: fix some pvsched bugs https://gitee.com/openeuler/kernel/pulls/404
+
+议题二：openeuler 实时内核（PREEMPT_RT）规划讨论  --丁翔
+
+议题三：Industrial-Control SIG ROADMAP 完成情况介绍  --郭浩（麒麟软件）
+
+三、本期遗留问题
+1、openEuler缺陷issue处理流程介绍
+2、内核热升级下一步规划，需求讨论
+
+温馨提醒：请在接入会议后修改参会人的姓名，也可以使用您在gitee.com的ID
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+【2023/2/10 Kernel SIG 双周例会】
+会议时间：2023年2月10日 14:00-15:30
+轮值主持：廖涛
+下次轮值主持：郑增凯
+
+会议链接：https://us06web.zoom.us/j/82433422280?pwd=S2FtQmg2cTVJdUpZeExoOGNyRzlUQT09
+ 
+会议纪要：https://etherpad.openeuler.org/p/Kernel-meetings
+
+一、上期遗留问题跟踪
+
+二、议题列表
+
+议题一：进展update（10min）  --- 张伽琳 & 郑增凯
+近两周(2023.1.30 ~ 2.10)内进展同步：
+        总体上
+        OLK-5.10主干更新tag 至5.10.0-142.0.0
+        openEuler-22.03-LTS维护分支更新tag至5.10.0-60.80.0，
+                对应rpm包下载地址：https://repo.openeuler.org/openEuler-22.03-LTS/update/
+        openEuler-22.03-LTS-SP1分支，更新到tag 5.10.0-136.18.0，
+                release ISO获取链接： https://repo.openeuler.org/openEuler-22.03-LTS-SP1/ISO/
+                对应update rpm包下载地址：
+                https://repo.openeuler.org/openEuler-22.03-LTS-SP1/update/aarch64/Packages/
+                
+        以openEuler-22.03-LTS-SP1为例：
+        从5.10.0-136.16.0 更新至5.10.0-136.18.0，回合补丁数142个
+        git log 5.10.0-136.16.0..5.10.0-136.18.0 --oneline | wc -l
+        142
+        主要是内存、文件系统相关bugfix和CVE
+        
+        openEuler-22.03-LTS-SP1分支回合CVE补丁8个:
+        CVE-2022-3707
+        CVE-2023-0394
+        CVE-2023-0590
+        CVE-2022-47929
+        CVE-2023-0179
+        CVE-2023-23454
+        CVE-2023-23455
+        CVE-2023-23559
+
+        同步linux 5.10.y 社区LTS补丁集2个：5.10.141 - 5.10.142
+
+        OLK-5.10合入PR: 4 个:
+        Hisilicon:
+        net: hns3: Some bugfix about L3E check, promisc mode update, FD counter rules and rss config for HNS3 https://gitee.com/openeuler/kernel/pulls/365
+        Virtualization:
+        AMD: Support svm guest when host CR4.LA57 is set. https://gitee.com/openeuler/kernel/pulls/362
+        Fix virtio-gpu free issues https://gitee.com/openeuler/kernel/pulls/360
+        mm:
+        machine check safe review issue modification https://gitee.com/openeuler/kernel/pulls/354
+
+        社区运维：
+                        新增了一份openEuler kernel贡献通用流程：
+                        Generic steps to contribute to openEuler kernel
+                        https://gitee.com/openeuler/kernel/wikis/Generic%20steps%20to%20contribute%20to%20openEuler%20kernel?sort_id=7738111
+                        
+                        openEuler/kernel PR门禁变更：
+                        新增了checkpatch/checkformat/checkdepend检查项
+                        
+                        openeuler-ci-bot Get Maintainers 回显功能准备上线
+                        
+                        需求管理：
+                        使用gitee自带的milestones里程碑跟踪openEuler-22.03-LTS-SP2需求，各开发者可以提前录入跟踪：
+                        https://e.gitee.com/open_euler/milestones/181999/issues/table
+                        
+                        希望创建一个openEuler kernel特性支持看板
+
+议题二：英特尔平台几个复杂特性的代码情况说明和讨论 --- 曾昭荣
+主要介绍了两个变动较大的复杂特性：TDX和IOMMUFD/VTD-Nested/SIOV
+结论：变动较大的复杂特性，建议结合应用场景进一步描述，需要统筹多方共同商讨
+
+三、本期遗留问题
+1、
+
+温馨提醒：请在接入会议后修改参会人的姓名，也可以使用您在gitee.com的ID
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+【2023/1/13 Kernel SIG 双周例会】
+会议时间：2023年1月13日 14:00-15:30
+轮值主持：郑增凯
+下次轮值主持：廖涛
+
+会议链接：https://us06web.zoom.us/j/82433422280?pwd=S2FtQmg2cTVJdUpZeExoOGNyRzlUQT09
+ 
+会议纪要：https://etherpad.openeuler.org/p/Kernel-meetings
+
+一、上期遗留问题跟踪
+
+二、议题列表
+
+议题一：进展update（10min）  --- 郑增凯
+
+议题二：新增张伽琳为kernel sig committer
+通过
+
+三、本期遗留问题
+1、
+
+温馨提醒：请在接入会议后修改参会人的姓名，也可以使用您在gitee.com的ID
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

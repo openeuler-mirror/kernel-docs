@@ -33,7 +33,7 @@ git config --global user.email <email@example.com>
 
 2. 链接远程仓库
 
-生成 SSH 密匙：
+生成 SSH 密钥：
 
 ```
 ssh-keygen -t rsa -C "youremail\@example.com"

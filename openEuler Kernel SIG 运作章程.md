@@ -10,7 +10,7 @@
 
 ##  第二章 社区行为准则
 
-第4条：社区开发活动应遵守[《openEuler社区行为准则》](https://www.openeuler.org/zh/community/conduct/)和[《openEuler社区开发行为规范》](https://gitee.com/openeuler/community/blob/master/zh/technical-committee/governance/openEuler%E7%A4%BE%E5%8C%BA%E5%BC%80%E5%8F%91%E8%A1%8C%E4%B8%BA%E8%A7%84%E8%8C%83.md)。
+第4条：社区开发活动应遵守[《openEuler社区行为准则》](https://www.openeuler.org/zh/community/conduct/)和[《openEuler社区开发行为规范》](https://atomgit.com/openeuler/community/blob/master/zh/technical-committee/governance/openEuler%E7%A4%BE%E5%8C%BA%E5%BC%80%E5%8F%91%E8%A1%8C%E4%B8%BA%E8%A7%84%E8%8C%83.md)。
 
 ## 第三章 Kernel SIG 的构成
 

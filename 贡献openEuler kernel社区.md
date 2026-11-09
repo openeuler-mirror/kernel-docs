@@ -64,7 +64,7 @@ openEuler kernel 涉及两个仓库：
 openEuler kernel 源码仓的分支按类型分为以下三种：
 
 - **开发分支**：从上游 [Linux Stable](https://www.kernel.org) 对应版本检出，是社区开发的主线。新特性、bugfix、CVE 修复均合入开发分支。
-- **维护分支**：从开发分支定期检出，用于维护已发布的 openEuler 发行版内核。维护分支**不直接接受新特性合入**，每周从开发分支同步 bugfix/CVE 补丁。维护周期一般为两年。
+- **维护分支**：从开发分支定期检出，用于维护已发布的 openEuler 发行版内核。维护分支**不直接接受新特性合入**，每周从开发分支同步 bugfix/CVE 补丁；每当新的 SP 版本发布时，会将开发分支上的新特性 rebase 同步到维护分支。维护分支的维护周期一般为两年。
 - **创新分支**：每年检出一次，从开发分支或上游新内核版本检出，用于实验性特性的提前开发和验证，维护周期为半年。
 
 > 具体生命周期详见 [openEuler 生命周期](https://www.openeuler.org/zh/other/lifecycle/)
@@ -74,7 +74,7 @@ openEuler kernel 源码仓的分支按类型分为以下三种：
 | 分支 | 类型 | 内核版本 | 说明 |
 |------|------|----------|------|
 | OLK-6.6 | 开发分支 | 6.6 | 当前主开发分支，新特性、bugfix、CVE 修复均合入此分支。从上游 Linux 6.6 Stable 检出 |
-| openEuler-24.03* | 维护分支 | 6.6 | 从 OLK-6.6 检出的维护分支，每周从 OLK-6.6 同步 bugfix/CVE 补丁 |
+| openEuler-24.03* | 维护分支 | 6.6 | 从 OLK-6.6 检出的维护分支，每周从 OLK-6.6 同步 bugfix/CVE 补丁，新 SP 版本发布时通过 rebase 同步新特性 |
 | openEuler-26.09 | 创新分支 | 6.6 | 从 OLK-6.6 检出的创新分支，用于实验性特性的开发和验证 |
 | OLK-5.10 | 开发&维护分支 | 5.10 | 5.10 内核版本的开发与维护，从上游 Linux 5.10 Stable 检出 |
 | openEuler-1.0-LTS | 开发&维护分支 | 4.19 | 4.19 内核版本的开发与维护，从上游 Linux 4.19 Stable 检出 |
@@ -90,6 +90,7 @@ openEuler kernel 源码仓的分支按类型分为以下三种：
   │       │
   │       ├── 每半年检出 ──→ openEuler-24.03*（维护分支）
   │       │                  每周同步 bugfix/CVE
+  │       │                  SP 发布时 rebase 同步新特性
   │       │
   │       └── 每年检出 ────→ openEuler-26.09（创新分支）
   │                          实验性特性验证
@@ -99,7 +100,7 @@ openEuler kernel 源码仓的分支按类型分为以下三种：
   └─ 4.19 ─→ openEuler-1.0-LTS（开发&维护分支）
 ```
 
-> **提示**：在大多数情况下，您的补丁**只需要**提交到开发分支（如 OLK-6.6），社区会每周自动同步 bugfix/CVE 补丁到对应的维护分支。
+> **提示**：在大多数情况下，您的补丁**只需要**提交到开发分支（如 OLK-6.6），社区会每周自动同步 bugfix/CVE 补丁到对应的维护分支，新特性则会在新 SP 版本发布时通过 rebase 同步到维护分支。
 
 ### 制品仓与源码仓分支对应
 
@@ -190,10 +191,18 @@ git send-email -to="kernel@openeuler.org" --suppress-cc=all <patches>
 
 您可以[点击此处](https://git-scm.com/docs/git-send-email)查看使用 git-send-email 发送补丁程序指引。
 
-在大多数情况下，您的补丁**只需要**发送到开发分支，每周会自动同步开发分支的 bugfix/cve 补丁到维护分支。您可以检出维护分支查看同步情况。
+在大多数情况下，您的补丁**只需要**发送到开发分支，每周会自动同步开发分支的 bugfix/cve 补丁到维护分支，新特性则会在新 SP 版本发布时通过 rebase 同步。您可以检出维护分支查看同步情况。
 
 ## 成为 Committer / Maintainer
 
 openEuler Kernel SIG 的社区角色由 Contributor（贡献者）、Committer（审核者）、Maintainer（维护者）、Branch Keeper（分支守护者）四种构成。随着您对社区的持续贡献，可以申请晋升为 Committer 或 Maintainer，获得相应的代码审核与合入权限。
 
 关于各角色的职责、权限、任免机制等详细规则，请参见 **[openEuler Kernel SIG 运作章程](https://gitcode.com/openeuler/kernel-docs/blob/master/openEuler%20Kernel%20SIG%20%E8%BF%90%E4%BD%9C%E7%AB%A0%E7%A8%8B.md)**。
+
+### Committer 权限配置
+
+Committer 权限的配置分为以下两步：
+
+1. **申请 Committer 身份**（没有 Committer 身份的需要做这一步，已经是 Committer 的可直接跳过）：到 openEuler community 仓库 Kernel SIG 的 [sig-info.yaml](https://gitcode.com/openeuler/community/blob/master/sig/Kernel/sig-info.yaml) 提交 PR，将个人 atomgit id、姓名拼音、邮箱（用于 Signed-off-by）添加到 `committers:` 下方。提交 PR 后，需 Committer 信息涉及的人员评论 /lgtm，之后等待合入即可。
+
+2. **配置 Committer 负责的模块**：到内核源码仓根目录下修改 CODEOWNERS 文件（如 OLK-6.6 的 [CODEOWNERS](https://atomgit.com/openeuler/kernel/blob/OLK-6.6/CODEOWNERS)），按照 [CODEOWNERS 规则](https://docs.atomgit.com/docs/help/home/org_project/project_manage/file_operations/code-owners/#codeowners-file)修改。修改后，可执行 `./scripts/get_codeowner.py` 验证指定模块的 Committer 配置是否符合预期。
